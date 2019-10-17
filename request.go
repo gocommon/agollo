@@ -1,10 +1,13 @@
 package agollo
 
 import (
+	"errors"
 	"io"
 	"io/ioutil"
 	"net/http"
 )
+
+var ErrorStatusNotOK = errors.New("http resp code not ok")
 
 // this is a static check
 var _ requester = (*httprequester)(nil)
@@ -35,6 +38,6 @@ func (r *httprequester) request(url string) ([]byte, error) {
 	}
 
 	// Diacard all body if status code is not 200
-	io.Copy(ioutil.Discard, resp.Body)
-	return nil, nil
+	_, _ = io.Copy(ioutil.Discard, resp.Body)
+	return nil, ErrorStatusNotOK
 }
